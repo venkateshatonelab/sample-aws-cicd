@@ -1,9 +1,16 @@
 {
-  "name": "Elastic-Beanstalk-Sample-App",
+  "name": "elastic-beanstalk-sample-app",
   "version": "0.0.1",
   "private": true,
-  "dependencies": {"async": "2.5.x"},
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^6.9.1"
+  },
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.4.2"
   }
 }
