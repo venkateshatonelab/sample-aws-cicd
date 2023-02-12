@@ -1,39 +1,35 @@
-var port = process.env.PORT || 3000,
-    http = require('http'),
-    fs = require('fs'),
-    html = fs.readFileSync('index.html');
+const express = require('express');
+const mongoose = require('mongoose');
 
-var log = function(entry) {
-    fs.appendFileSync('/tmp/sample-app.log', new Date().toISOString() + ' - ' + entry + '\n');
-};
+mongoose
+	.connect(process.env.DATABASE_URI, {
+		useUnifiedTopology: false,
+	})
+	.then(() => {
+		console.log('connected');
+	})
+	.catch(() => {
+		console.log('failed to connect');
+	});
 
-var server = http.createServer(function (req, res) {
-    if (req.method === 'POST') {
-        var body = '';
+const Employee = mongoose.model('Employee', new mongoose.Schema({ name: String, age: Number, phone: String, gender: String }, { timestamps: true }));
 
-        req.on('data', function(chunk) {
-            body += chunk;
-        });
+const app = express();
 
-        req.on('end', function() {
-            if (req.url === '/') {
-                log('Received message: ' + body);
-            } else if (req.url = '/scheduled') {
-                log('Received task ' + req.headers['x-aws-sqsd-taskname'] + ' scheduled at ' + req.headers['x-aws-sqsd-scheduled-at']);
-            }
+app.use(express.json());
 
-            res.writeHead(200, 'OK', {'Content-Type': 'text/plain'});
-            res.end();
-        });
-    } else {
-        res.writeHead(200);
-        res.write(html);
-        res.end();
-    }
+app.get('/api/users', async (req, res) => {
+	const users = await Employee.find({});
+	return res.status(200).json({ message: 'user fetched successfully', users: users, status_code: 200 });
 });
 
-// Listen on port 3000, IP defaults to 127.0.0.1
-server.listen(port);
+app.post('/api/users', async (req, res) => {
+	const body = req.body;
+	const user = new Employee({ name: body.name, age: body.age, phone: body.phone, gender: body.gender });
+	const data = await user.save();
+	return res.status(201).json({ message: 'user details saved', user: data, status_code: 201 });
+});
 
-// Put a friendly message on the terminal
-console.log('Server running at http://127.0.0.1:' + port + '/');
+app.listen(process.env.PORT || 3000, () => {
+	console.log('server is fired');
+});
