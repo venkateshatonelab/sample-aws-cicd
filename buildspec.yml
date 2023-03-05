@@ -5,35 +5,26 @@ phases:
     runtime-versions:
       nodejs: 16
     commands:
-      # Install dependencies
-      npm install
-      
-      # Download and install SonarScanner
-      curl -sSLo sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
-      unzip sonar-scanner.zip
-      mv sonar-scanner-4.6.2.2472-linux /opt/sonar-scanner
-      
-      # Set up SonarScanner environment variables
-      export PATH=$PATH:/opt/sonar-scanner/bin
-      export SONAR_SCANNER_OPTS="-Xmx512m"
-  
+      - echo Installing JEST...
+      - npm install -g jest
   pre_build:
     commands:
-      # Run tests and generate coverage report
-      npm test -- --coverage
-
-      # Run SonarScanner
-      sonar-scanner  -Dsonar.projectKey=sample-app -Dsonar.sources=. -Dsonar.host.url=http://3.108.50.135 -Dsonar.login=sqp_28b5663d94cc65f46e64c23c27b3fc89767fdd2e
-  
+      - echo Installing source NPM dependencies...
+      - npm install
   build:
     commands:
-      # Create a ZIP file of the app files
-      zip -r sample-app.zip .
-  
+      - echo Build started on `date`
+      - echo Compiling the Node.js code
+      - npm run test
   post_build:
     commands:
-      # Create a new Elastic Beanstalk application version
-      aws elasticbeanstalk create-application-version --application-name sample-app  --version-label v1 --source-bundle S3Bucket=codepipeline-ap-south-1-350224782417,S3Key=sample-app.zip
-      
-      # Deploy the new version to the Elastic Beanstalk environment
-      aws elasticbeanstalk update-environment --environment-name Sampleapp-env --version-label v1
+      - echo Build completed on `date`
+# Include only the files required for your application to run.
+# Do not use recursively include artifacts from node_modules directory as it will include unnecessary packages
+# used only for building and testing.
+# ExpressJS apps will need other artifact directories included (bin/*, public/*, routes/*, views/* etc).
+artifacts:
+  files:
+    - app.js
+    - package.json
+    - node_modules/*
