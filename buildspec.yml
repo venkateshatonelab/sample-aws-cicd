@@ -21,10 +21,12 @@ phases:
     commands:
       # Run tests and generate coverage report
       - npm test
-
+      - rm package-lock.json
+      
       # Run SonarScanner
       - sonar-scanner  -Dsonar.projectKey=sample-app -Dsonar.sources=. -Dsonar.host.url=http://3.108.50.135 -Dsonar.login=sqp_28b5663d94cc65f46e64c23c27b3fc89767fdd2e
 artifacts:
   files:
-    - /*
+    - node_modules/*
+    - app.js
 
