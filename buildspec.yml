@@ -25,18 +25,25 @@ phases:
       # Run SonarScanner
       - sonar-scanner  -Dsonar.projectKey=sample-app -Dsonar.sources=. -Dsonar.host.url=http://3.108.50.135 -Dsonar.login=sqp_28b5663d94cc65f46e64c23c27b3fc89767fdd2e
   
-  build:
-    commands:
-      # Create a ZIP file of the app files
-      - zip -r sample-app.zip .
-  
-  post_build:
-    commands:
-      # aws cli version
-      - aws --version
+  artifacts:
+    files:
+      - app.js
+      - package.json
+      - package-lock.json
+      - node_modules/*
 
-      # Create a new Elastic Beanstalk application version
-      - aws elasticbeanstalk create-application-version --application-name sample-app  --version-label v1 --source-bundle S3Bucket=codepipeline-ap-south-1-350224782417,S3Key=sample-app.zip
+  # build:
+  #   commands:
+  #     # Create a ZIP file of the app files
+  #     - zip -r sample-app.zip .
+  
+  # post_build:
+  #   commands:
+  #     # aws cli version
+  #     - aws --version
+
+  #     # Create a new Elastic Beanstalk application version
+  #     - aws elasticbeanstalk create-application-version --application-name sample-app  --version-label v1 --source-bundle S3Bucket=codepipeline-ap-south-1-350224782417,S3Key=sample-app.zip
       
-      # Deploy the new version to the Elastic Beanstalk environment
-      - aws elasticbeanstalk update-environment --environment-name Sampleapp-env --version-label v1
+  #     # Deploy the new version to the Elastic Beanstalk environment
+  #     - aws elasticbeanstalk update-environment --environment-name Sampleapp-env --version-label v1
