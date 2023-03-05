@@ -32,6 +32,9 @@ phases:
   
   post_build:
     commands:
+      # aws cli version
+      - aws --version
+    
       # Create a new Elastic Beanstalk application version
       - aws elasticbeanstalk create-application-version --application-name sample-app  --version-label v1 --source-bundle S3Bucket=codepipeline-ap-south-1-350224782417,S3Key=sample-app.zip
       
