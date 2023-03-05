@@ -32,18 +32,3 @@ phases:
       - package-lock.json
       - node_modules/*
 
-  # build:
-  #   commands:
-  #     # Create a ZIP file of the app files
-  #     - zip -r sample-app.zip .
-  
-  # post_build:
-  #   commands:
-  #     # aws cli version
-  #     - aws --version
-
-  #     # Create a new Elastic Beanstalk application version
-  #     - aws elasticbeanstalk create-application-version --application-name sample-app  --version-label v1 --source-bundle S3Bucket=codepipeline-ap-south-1-350224782417,S3Key=sample-app.zip
-      
-  #     # Deploy the new version to the Elastic Beanstalk environment
-  #     - aws elasticbeanstalk update-environment --environment-name Sampleapp-env --version-label v1
