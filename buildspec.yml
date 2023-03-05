@@ -13,24 +13,25 @@ phases:
       - echo Installing source NPM dependencies ...
       - npm install
       - echo Installing sonarqube ...
-      - mkdir /downloads/sonarqube -p
-      - cd /downloads/sonarqube
-      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
-      - unzip sonar-scanner-cli-4.2.0.1873-linux.zip
-      - mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
-      - echo -e "sonar.host.url=http://3.108.50.135/ \n  sonar.sourceEncoding=UTF-8 \n sonar.qualitygate.wait=true " >> /opt/sonar-scanner/conf/sonar-scanner.properties
-      - echo -e "#/bin/bash \n export PATH='$PATH:/opt/sonar-scanner/bin'" >> /etc/profile.d/sonar-scanner.sh
-      - source /etc/profile.d/sonar-scanner.sh
-      - sonar-scanner -v
+      - echo Installing dependencies...
+      - pip install -r requirements.txt
+      - echo Installing SonarScanner...
+      - curl -L -o sonarscanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+      - unzip sonarscanner.zip
+      - rm sonarscanner.zip
+      - export PATH="$PATH:$PWD/sonar-scanner-4.6.2.2472-linux/bin"
   build:
     commands:
       - echo Build started on `date`
       - echo Compiling the Node.js code
       - npm run test
-      - echo Running sonar-scanner
-      - cd ../..
-      - cd /codebuild/output/src*/src
-      - sonar-scanner  -Dsonar.projectKey=sample-app  -Dsonar.sources=.  -Dsonar.host.url=http://3.108.50.135
+      - echo Running code analysis with SonarQube...
+      - sonar-scanner \
+          -Dsonar.projectKey=sample-app \
+          -Dsonar.sources=. \
+          -Dsonar.host.url=http://3.108.50.135 \
+          -Dsonar.login=sqp_28b5663d94cc65f46e64c23c27b3fc89767fdd2e
+
   post_build:
     commands:
       - echo Build completed on `date`
