@@ -24,13 +24,7 @@ phases:
 
       # Run SonarScanner
       - sonar-scanner  -Dsonar.projectKey=sample-app -Dsonar.sources=. -Dsonar.host.url=http://3.108.50.135 -Dsonar.login=sqp_28b5663d94cc65f46e64c23c27b3fc89767fdd2e
-      - ls
-      - cd node_modules
-      - ls
 artifacts:
   files:
-    - app.js
-    - package.json
-    - package-lock.json
-    - node_modules
+    - *
 
