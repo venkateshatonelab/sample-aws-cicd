@@ -27,7 +27,6 @@ phases:
       - sonar-scanner  -Dsonar.projectKey=sample-app -Dsonar.sources=. -Dsonar.host.url=http://3.108.50.135 -Dsonar.login=sqp_28b5663d94cc65f46e64c23c27b3fc89767fdd2e
 artifacts:
   files:
-    - node_modules/express/*
-    - node_modules/mongoose/*
+    - node_modules/*/*
     - app.js
 
